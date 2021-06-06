@@ -7,6 +7,7 @@ const app = express();
 const cors = require("cors");
 const knex = require("knex");
 const { unstable_createPortal } = require("react-dom");
+const register = require('./controllers/register');
 
 const db = knex({
   client: "pg",
@@ -45,41 +46,7 @@ app.post("/signin", (req, resp) => {
 });
 
 //register --> POST = new user object returned
-app.post("/register", (req, resp) => {
-  const { email, name, password } = req.body;
-  const hash = bcrypt.hashSync(password, 10);
-
-  // A transaction
-  db.transaction((trx) => {
-    return trx
-      .insert({
-        hash: hash,
-        email: email,
-      })
-      .into("login")
-      .returning("email")
-      .then((loginEmail) => {
-        return trx("users")
-          .returning("*")
-          .insert({
-            email: loginEmail[0],
-            name: name,
-            joined: new Date(),
-          })
-          .then((user) => {
-            resp.json(user[0]);
-          });
-      })
-      .then(trx.comit)
-      .catch(trx.rollback);
-  }).catch((err) =>
-    resp
-      .status(400)
-      .json(
-        "Sorry we are unable to register that user.. please try another name and email address"
-      )
-  );
-});
+app.post("/register", (req, resp) => {register.handleRegister(req, resp, db, bcrypt)});
 
 //profile/:userId --> GET = returns user
 app.get("/profile/:id", (req, resp) => {
