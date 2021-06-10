@@ -11,11 +11,7 @@ import SignIn from "./components/SignIn/SignIn.js";
 import Register from "./components/Register/Register.js";
 
 const app = new Clarifai.App({
-<<<<<<< HEAD
   apiKey: "238dc38c965f43728dd8fcbfa1ac7d06",
-=======
-  apiKey: "API_KEY_HERE"
->>>>>>> 68b1cb5723c0f858a6d70e309577b1400409085b
 });
 
 const particlesOptions = {
@@ -167,8 +163,4 @@ class App extends React.Component {
     );
   }
 }
-<<<<<<< HEAD
-export default App;
-=======
   export default App;
->>>>>>> 68b1cb5723c0f858a6d70e309577b1400409085b
