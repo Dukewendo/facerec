@@ -8,14 +8,19 @@ const cors = require("cors");
 const knex = require("knex");
 const { unstable_createPortal } = require("react-dom");
 const register = require('./controllers/register');
+const signin = require ('./controllers/signin');
+const profile = require ('./controllers/profile');
+const image = require ('./controllers/image');
+const { Profiler } = require("react");
+
 
 const db = knex({
   client: "pg",
   connection: {
     host: "127.0.0.1",
     user: "postgres",
-    password: "",
-    database: "",
+    password: "Coding2025",
+    database: "smart-brain",
   },
 });
 
@@ -23,59 +28,19 @@ app.use(bodyParser.json());
 app.use(cors());
 
 //signin --> POST (request user info) = success/fail
-app.post("/signin", (req, resp) => {
-  db.select("email", "hash")
-    .from("login")
-    .where("email", "=", req.body.email)
-    .then((data) => {
-      const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
-      if (isValid) {
-        return db
-          .select("*")
-          .from("users")
-          .where("email", "=", req.body.email)
-          .then((user) => {
-          resp.json(user[0]);
-          })
-          .catch((err) => resp.status(400).json("unable to get user"));
-      } else {
-        resp.status(400).json("wrong credentials");
-      }
-    })
-    .catch((err) => resp.status(400).json("wrong credentials"));
-});
+app.post("/signin", (req, resp) => {signin.handleSignin(req, resp, db, bcrypt)});
 
 //register --> POST = new user object returned
 app.post("/register", (req, resp) => {register.handleRegister(req, resp, db, bcrypt)});
 
 //profile/:userId --> GET = returns user
-app.get("/profile/:id", (req, resp) => {
-  const { id } = req.params;
-  db.select("*")
-    .from("users")
-    .where({ id })
-    .then((user) => {
-      if (user.length) {
-        resp.json(user[0]);
-      } else {
-        resp.status(400).json("Not found");
-      }
-    })
-    .catch((err) => resp.status(400).json("Error getting user"));
-});
+app.get("/profile/:id", (req, resp) => { profile.handleProfileGet(req, resp, db)});
 
 //image end point --> PUT --> returns updated count for user
-app.put("/image", (req, resp) => {
-  const { id } = req.body;
-  db("users")
-    .where("id", "=", id)
-    .increment("entries", 1)
-    .returning("entries")
-    .then((entries) => {
-      resp.json(entries[0]);
-    })
-    .catch((err) => resp.status(400).json("unable to get count"));
-});
+app.put("/image", (req, resp) => {image.handleImage(req, resp, db)});
+app.post("/imageurl", (req, resp) => {image.handleApiCall(req, resp)});
+
+
 
 app.listen(3000, () => {
   console.log("app started- port 3000");
