@@ -17,11 +17,9 @@ const { Profiler } = require("react");
 const db = knex({
   client: "pg",
   connection: {
-    host: "postgresql-contoured-38501",
-    user: "postgres",
-    password: "Coding2025",
-    database: "smart-brain",
-  },
+    host: process.env.DATABASE_URL,
+    ssl: true,
+  }
 });
 
 app.use(bodyParser.json());
