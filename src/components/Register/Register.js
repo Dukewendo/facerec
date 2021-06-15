@@ -24,7 +24,7 @@ class Register extends React.Component{
   }
   
   onSubmitSignIn = () => {
-    fetch("https://radiant-spire-12108.herokuapp.com/register", {
+    fetch("https://facerec-smart-brain.herokuapp.com/register", {
       method: "post",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({

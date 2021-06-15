@@ -93,7 +93,7 @@ class App extends React.Component {
 
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input });
-    fetch("facerec-smart-brain/imageurl", {
+    fetch("https://facerec-smart-brain.herokuapp.com/imageurl", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -103,7 +103,7 @@ class App extends React.Component {
     .then(response => response.json())
       .then((response) => {
         if (response) {
-          fetch("https://facerec-smart-brain:3000/image", {
+          fetch("https://facerec-smart-brain.herokuapp.com:3000/image", {
             method: "put",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
